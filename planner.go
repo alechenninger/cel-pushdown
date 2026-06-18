@@ -9,7 +9,6 @@ import (
 	"github.com/google/cel-go/cel"
 	celast "github.com/google/cel-go/common/ast"
 	"github.com/google/cel-go/common/operators"
-	"github.com/google/cel-go/common/types/ref"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -569,5 +568,3 @@ func maxInt(a, b int) int {
 	}
 	return b
 }
-
-var _ ref.Val
