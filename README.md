@@ -1,6 +1,6 @@
 # cel-pushdown
 
-`celkube` is a Go prototype for predicate pushdown from a restricted subset of CEL over Kubernetes objects into native Kubernetes list/get queries.
+`cel-pushdown` is a Go prototype for predicate pushdown from a restricted subset of CEL over Kubernetes objects into native Kubernetes list/get queries.
 
 It compiles the Kubernetes-query-compatible subset of CEL into Kubernetes list/get options and leaves the rest as residual CEL.
 
@@ -55,9 +55,9 @@ exact: false
 Code sample:
 
 ```go
-planner, err := celkube.NewPlanner(celkube.PlanOptions{
+planner, err := celpushdown.NewPlanner(celpushdown.PlanOptions{
     AllowAllNamespaces: true,
-    FieldSupport:       celkube.BuiltinFieldSupport{},
+    FieldSupport:       celpushdown.BuiltinFieldSupport{},
     ResourceResolver:   resolver,
     PreserveOriginalCEL: true,
 })
@@ -85,7 +85,7 @@ _ = items
 
 ## Package overview
 
-The package lives at the repository root as `package celkube`.
+The package lives at the repository root as `package celpushdown`.
 
 Main API:
 

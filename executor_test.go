@@ -1,4 +1,4 @@
-package celkube
+package celpushdown
 
 import (
 	"context"
