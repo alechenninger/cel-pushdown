@@ -1,0 +1,6 @@
+github.com/google/cel-go v0.28.1 h1:YWIwi77J4xIsYUwAF/iIuS6haffzIHS8yWI8glSbLWM=
+github.com/google/cel-go v0.28.1/go.mod h1:X0bD6iVNR8pkROSOoHVdgTkzmRcosof7WQqCD6wcMc8=
+k8s.io/apimachinery v0.34.9 h1:WuRPolTfoEST1TQe9sLcT1QAWLMT0CNE4Eqj29XuUmQ=
+k8s.io/apimachinery v0.34.9/go.mod h1:z7dd12Xd400CXIycE8nmn32xZhApV9zskHs0A5xeU/Q=
+k8s.io/client-go v0.34.9 h1:HlhSEGPyCFH5rQADW6NPKEziGns6ekgUCPK0OsOGU90=
+k8s.io/client-go v0.34.9/go.mod h1:bI3Sqqmwls2JKFZOQN9h8oLaeibvIA5pqqJAaSJWnrk=
