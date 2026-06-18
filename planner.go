@@ -115,16 +115,6 @@ func (p *Planner) EvalResidual(ctx context.Context, plan *Plan, obj map[string]a
 	for k, v := range obj {
 		activationObject[k] = v
 	}
-	if _, ok := activationObject["apiVersion"]; !ok {
-		if s, ok := obj["apiVersion"].(string); ok {
-			activationObject["apiVersion"] = s
-		}
-	}
-	if _, ok := activationObject["kind"]; !ok {
-		if s, ok := obj["kind"].(string); ok {
-			activationObject["kind"] = s
-		}
-	}
 
 	out, _, err := plan.Residual.Program.Eval(map[string]any{"object": activationObject})
 	if err != nil {
