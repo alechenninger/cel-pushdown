@@ -34,12 +34,12 @@ func (p *Planner) Plan(ctx context.Context, expr string) (*Plan, error) {
 	if issues != nil && issues.Err() != nil {
 		return nil, issues.Err()
 	}
-	checked, issues := p.env.Check(parsed)
+	_, issues = p.env.Check(parsed)
 	if issues != nil && issues.Err() != nil {
 		return nil, issues.Err()
 	}
 
-	native := checked.NativeRep()
+	native := parsed.NativeRep()
 	state := newConstraintState()
 	var residualParts []string
 
@@ -162,14 +162,26 @@ func newConstraintState() *constraintState {
 }
 
 func splitConjuncts(expr celast.Expr, info *celast.SourceInfo, original string) []conjunct {
-	if isCall(expr, operators.LogicalAnd) {
-		args := expr.AsCall().Args()
-		var out []conjunct
-		out = append(out, splitConjuncts(args[0], info, original)...)
-		out = append(out, splitConjuncts(args[1], info, original)...)
+	exprs := flattenConjuncts(expr)
+	sources := splitTopLevelAnd(original)
+	if len(exprs) == len(sources) {
+		out := make([]conjunct, 0, len(exprs))
+		for i := range exprs {
+			out = append(out, conjunct{expr: exprs[i], source: strings.TrimSpace(sources[i])})
+		}
 		return out
 	}
 	return []conjunct{{expr: expr, source: expressionSource(expr, info, original)}}
+}
+
+func flattenConjuncts(expr celast.Expr) []celast.Expr {
+	if !isCall(expr, operators.LogicalAnd) {
+		return []celast.Expr{expr}
+	}
+	args := expr.AsCall().Args()
+	out := flattenConjuncts(args[0])
+	out = append(out, flattenConjuncts(args[1])...)
+	return out
 }
 
 func expressionSource(expr celast.Expr, info *celast.SourceInfo, original string) string {
@@ -183,6 +195,49 @@ func expressionSource(expr celast.Expr, info *celast.SourceInfo, original string
 		}
 	}
 	return strings.TrimSpace(original)
+}
+
+func splitTopLevelAnd(source string) []string {
+	var parts []string
+	start := 0
+	depth := 0
+	inString := false
+	escaped := false
+	for i := 0; i < len(source); i++ {
+		ch := source[i]
+		if inString {
+			if escaped {
+				escaped = false
+				continue
+			}
+			if ch == '\\' {
+				escaped = true
+				continue
+			}
+			if ch == '"' {
+				inString = false
+			}
+			continue
+		}
+		switch ch {
+		case '"':
+			inString = true
+		case '(', '[', '{':
+			depth++
+		case ')', ']', '}':
+			if depth > 0 {
+				depth--
+			}
+		case '&':
+			if depth == 0 && i+1 < len(source) && source[i+1] == '&' {
+				parts = append(parts, source[start:i])
+				start = i + 2
+				i++
+			}
+		}
+	}
+	parts = append(parts, source[start:])
+	return parts
 }
 
 func joinResiduals(parts []string) string {

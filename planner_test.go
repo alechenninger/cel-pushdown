@@ -2,6 +2,7 @@ package celkube
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -161,8 +162,8 @@ object.metadata.name == "nginx"`,
 			t.Parallel()
 
 			planner, err := NewPlanner(PlanOptions{
-				FieldSupport:       tt.fieldSupport,
-				ResourceResolver:   staticResolver{mapping: map[schema.GroupVersionKind]schema.GroupVersionResource{podGVK: podGVR}},
+				FieldSupport:        tt.fieldSupport,
+				ResourceResolver:    staticResolver{mapping: map[schema.GroupVersionKind]schema.GroupVersionResource{podGVK: podGVR}},
 				PreserveOriginalCEL: true,
 			})
 			if err != nil {
@@ -221,7 +222,7 @@ type staticResolver struct {
 func (r staticResolver) Resolve(gvk schema.GroupVersionKind) (schema.GroupVersionResource, error) {
 	gvr, ok := r.mapping[gvk]
 	if !ok {
-		return schema.GroupVersionResource{}, schema.NoResourceMatchError{PartialResource: gvk.GroupVersion().WithResource(gvk.Kind)}
+		return schema.GroupVersionResource{}, fmt.Errorf("no mapping for %s", gvk.String())
 	}
 	return gvr, nil
 }

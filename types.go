@@ -1,13 +1,10 @@
 package celkube
 
 import (
-	"context"
-
 	"github.com/google/cel-go/cel"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/client-go/dynamic"
 )
 
 type Planner struct {
@@ -59,10 +56,10 @@ type Warning struct {
 }
 
 type PlanOptions struct {
-	AllowMultiQuery    bool
-	AllowAllNamespaces bool
-	FieldSupport       FieldSupport
-	ResourceResolver   ResourceResolver
+	AllowMultiQuery     bool
+	AllowAllNamespaces  bool
+	FieldSupport        FieldSupport
+	ResourceResolver    ResourceResolver
 	PreserveOriginalCEL bool
 }
 
@@ -72,8 +69,4 @@ type FieldSupport interface {
 
 type ResourceResolver interface {
 	Resolve(schema.GroupVersionKind) (schema.GroupVersionResource, error)
-}
-
-type Executor interface {
-	Execute(ctx context.Context, client dynamic.Interface, plan *Plan) ([]map[string]any, error)
 }

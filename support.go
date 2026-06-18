@@ -40,7 +40,7 @@ func (s StaticFieldSupport) SupportsField(gvk schema.GroupVersionKind, fieldPath
 type BuiltinFieldSupport struct{}
 
 func (BuiltinFieldSupport) SupportsField(gvk schema.GroupVersionKind, fieldPath string) bool {
-	if MinimalFieldSupport{}.SupportsField(gvk, fieldPath) {
+	if (MinimalFieldSupport{}).SupportsField(gvk, fieldPath) {
 		return true
 	}
 	podGVK := schema.GroupVersionKind{Group: "", Version: "v1", Kind: "Pod"}

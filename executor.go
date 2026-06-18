@@ -23,9 +23,10 @@ func (p *Planner) Execute(ctx context.Context, client dynamic.Interface, plan *P
 		return nil, fmt.Errorf("all-namespaces execution is disabled")
 	}
 
-	resource := client.Resource(plan.Resource.GroupVersionResource)
+	namespaceable := client.Resource(plan.Resource.GroupVersionResource)
+	var resource dynamic.ResourceInterface = namespaceable
 	if plan.Scope.Namespace != "" {
-		resource = resource.Namespace(plan.Scope.Namespace)
+		resource = namespaceable.Namespace(plan.Scope.Namespace)
 	}
 
 	if plan.Scope.Namespace != "" && plan.Scope.Name != "" {
